@@ -52,15 +52,24 @@ Get you a list of all employees in the DB
 #### /employees/:id - GET request
 ### 
 Get you an employee that matches this id in DB.
+#### /employees/leviathan/:id - GET request
+### 
+Get you an employee that matches this leviathanid in DB.
 #### /employees/ - POST request
 ### 
 Add an employee to DB.
 required fields are (firstName, lastName, telephone, role)
 #### /employees/:id - PATCH request
 ### 
-updates an employee to DB.
+updates an employee with matching id.
+required fields are (firstName, lastName, telephone, role)
+#### /employees/leviathan/:id - PATCH request
+### 
+updates an employee with matching leviathanid.
 required fields are (firstName, lastName, telephone, role)
 #### /employees/:id - DELETE request
 ### 
-Removes an employee.
-
+Removes an employee with matching id.
+#### /employees/leviathan/:id - DELETE request
+### 
+Removes an employee with matching leviathanid.

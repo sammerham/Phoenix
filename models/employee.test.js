@@ -33,7 +33,7 @@ const data = [
     email: 'd1@test.com',
     telephone: '111-111-1111',
     role: 'driver',
-    leviathanid: null
+    leviathanid: 'leviathantest1'
   },
   {
     id: expect.any(Number),
@@ -42,7 +42,7 @@ const data = [
     email: 'd2@test.com',
     telephone: '222-222-2222',
     role: 'admin',
-    leviathanid: null
+    leviathanid: 'leviathantest2'
   },
   {
     id: expect.any(Number),
@@ -51,7 +51,7 @@ const data = [
     email: 'd3@test.com',
     telephone: '333-333-3333',
     role: 'cashier',
-    leviathanid: null
+    leviathanid: 'leviathantest3'
   },
 ]
 /************************************** ShowAllEmployees*/
@@ -74,6 +74,23 @@ describe("Show employee By Id", () => {
   test("not found if no such employee", async () => {
     try {
       await Employee.showEmployeeById(0);
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+});
+
+/************************************** ShowEmployeeByleviathanID */
+describe("Show employee By leviathanID", () => {
+  test("works", async () => {
+    const employees = await Employee.showAll();
+    const empByLeviathanId = await Employee.showEmployeeByLeviathanID(employees[0].leviathanid);
+    expect(empByLeviathanId).toEqual(data[0]);
+  });
+
+  test("not found if no such employee", async () => {
+    try {
+      await Employee.showEmployeeByLeviathanID('notfound');
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
     }
@@ -162,7 +179,7 @@ describe("Delete an employee by LeviathanID", () => {
   });
 });
 
-/************************************** update an employee */
+/************************************** update an employee BY ID */
 
 describe("update an employee", () => {
   const updateData = {
@@ -176,7 +193,7 @@ describe("update an employee", () => {
 
   test("works", async () => {
     const employees = await Employee.showAll();
-    const updatedEmp = await Employee.updateEmployee(updateData,employees[0].id);
+    const updatedEmp = await Employee.updateEmployeeById(updateData,employees[0].id);
     expect(updatedEmp.firstname).toEqual('updatedEmployee');
     expect(updatedEmp.lastname).toEqual('updateLast');
     expect(updatedEmp.email).toEqual('updateemployee@test.com');
@@ -187,7 +204,7 @@ describe("update an employee", () => {
   test("bad request if no data", async () => {
     try {
       const employees = await Employee.showAll();
-      await Employee.updateEmployee(employees[0].id);
+      await Employee.updateEmployeeById(employees[0].id);
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
     }
@@ -195,7 +212,48 @@ describe("update an employee", () => {
   
   test("not found if no such employee", async () => {
     try {
-      await Employee.updateEmployee(999999);
+      await Employee.updateEmployeeById(999999);
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+});
+
+/************************************** update an employee BY leviathanID */
+
+describe("update an employee", () => {
+  const updateData = {
+    firstName: 'updatedEmployee',
+    lastName: 'updateLast',
+    email: 'updateemployee@test.com',
+    telephone: '000-000-0000',
+    role: 'updatedRole',
+    leviathanID:'leviathantest1',
+  };
+
+
+  test("works", async () => {
+    const employees = await Employee.showAll();
+    const updatedEmp = await Employee.updateEmployeeByLeviathanid(updateData,employees[0].leviathanid);
+    expect(updatedEmp.firstname).toEqual('updatedEmployee');
+    expect(updatedEmp.lastname).toEqual('updateLast');
+    expect(updatedEmp.email).toEqual('updateemployee@test.com');
+    expect(updatedEmp.role).toEqual('updatedRole');
+    expect(updatedEmp.telephone).toEqual('000-000-0000');
+  });
+
+  test("bad request if no data", async () => {
+    try {
+      const employees = await Employee.showAll();
+      await await Employee.updateEmployeeByLeviathanid(updateData,employees[0].leviathanid);
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
+  
+  test("not found if no such employee", async () => {
+    try {
+      await Employee.updateEmployeeByLeviathanid('not found');
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
     }

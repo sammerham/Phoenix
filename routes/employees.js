@@ -37,13 +37,16 @@ router.get('/', async (req, res, next) => {
     
     const employees = response.data;
     // map over results and insert into DB
-    if(employees)
+    if (employees)
+
     employees.map(async emp => {
       // check if employee record already exists in db;
  
       employeeRecord = await Employee.showEmployeeByLeviathanID(emp.id);
+
       //inserting into DB only if record is unique;
-      if (employeeRecord.length === 0)
+  
+      if (!employeeRecord)
         await Employee.addEmployee(
           emp.firstName,
           emp.lastName,
@@ -63,7 +66,7 @@ router.get('/', async (req, res, next) => {
 
 
 
-/** GET /id - returns `{
+/** GET /[id] - returns `{
  employee: {
     "id": 10,
     "firstname": "Davissss",
@@ -85,7 +88,40 @@ router.get("/:id", async function (req, res, next) {
   }
 });
 
+/** GET /leviathan/[id] - returns `{
+ employee: {
+    "id": 10,
+    "firstname": "Davissss",
+    "lastname": "Smith",
+    "email": null,
+    "leviathanid": "e78cdb27-3adf-48b8-8d81-7bd2e699f4b0",
+    "telephone": "555-666-5454",
+    "role": "asd"
+	}}` */
 
+
+router.get("/leviathan/:id", async function (req, res, next) {
+  try {
+    const { id } = req.params;
+    const employee = await Employee.showEmployeeByLeviathanID(id);
+    if (!employee) throw new NotFoundError(`No Employee with id: ${id}`, 404);
+    return res.status(200).json({ employee });
+  } catch (e) {
+    return next(e);
+  }
+});
+
+/** POST /employees - returns `{
+	"employee": {
+		"id": 1222,
+		"firstname": "9999",
+		"lastname": "man",
+		"email": null,
+		"leviathanid": "7eea13a8-ed74-4b1b-a1b8-6b6e9d824a0d",
+		"telephone": "925-000-4076",
+		"role": "driver"
+	}
+}` */
 router.post("/", async function (req, res, next) {
   
   try {
@@ -120,7 +156,7 @@ router.post("/", async function (req, res, next) {
     role);
     return res.status(201).json({ employee:result });
   } catch (e) {
-    return next(new ExpressError(e.message, 400));
+    return next(new ExpressError('first name, lastname, telephone, role are required fields', 400));
   }
 });
 
@@ -141,21 +177,75 @@ router.delete("/:id", async function (req, res, next) {
 });
 
 
+/** DELETE /[leviathanid] - delete employee, return `{message: "employee deleted"}` */
+
+router.delete("/leviathan/:id", async function (req, res, next) {
+  try {
+    const { id } = req.params;
+    const employee = await Employee.showEmployeeByLeviathanID(id);
+    if (!employee) throw new NotFoundError(`No matching employee with LeviathanID: ${id}`,404);
+    await Employee.deleteEmployeeByLeviathanID(id);
+    return res.status(200).json({ message: `Employee deleted!` });
+  } catch (e) {
+    return next(e);
+  }
+});
 
 
-/** PATCH /[id] - update fields in employee; return `{employee: employee}` */
+
+/** PATCH /[id] - update fields in employee; return ` 
+ {
+	"employee": {
+		"id": 306,
+		"firstname": "9999",
+		"lastname": "man",
+		"email": null,
+		"leviathanid": "35cec31b-9f3d-4bbb-b102-58e19772a06f",
+		"telephone": "925-000-4076",
+		"role": "driver"
+	}
+}
+` */
 
 router.patch("/:id", async function (req, res, next) {
   try {
     const { id } = req.params;
     const employee = await Employee.showEmployeeById(id);
     if (!employee) throw new NotFoundError(`No matching employee with ID: ${id}`,404);
-    const updatedEmployee = await Employee.updateEmployee(req.body, id);
+    const updatedEmployee = await Employee.updateEmployeeById(req.body, id);
     return res.status(200).json({ employee:updatedEmployee });
   } catch (e) {
     return next(e);
   };
 });
 
+
+
+
+/** PATCH /leviathan/[id] - update fields in employee; return ` 
+ {
+	"employee": {
+		"id": 306,
+		"firstname": "9999",
+		"lastname": "man",
+		"email": null,
+		"leviathanid": "35cec31b-9f3d-4bbb-b102-58e19772a06f",
+		"telephone": "925-000-4076",
+		"role": "driver"
+	}
+}
+` */
+
+router.patch("/leviathan/:id", async function (req, res, next) {
+  try {
+    const { id } = req.params;
+    const employee = await Employee.showEmployeeByLeviathanID(id);
+    if (!employee) throw new NotFoundError(`No matching employee with ID: ${id}`,404);
+    const updatedEmployee = await Employee.updateEmployeeByLeviathanid(req.body, id);
+    return res.status(200).json({ employee:updatedEmployee });
+  } catch (e) {
+    return next(e);
+  };
+});
 
 module.exports = router;

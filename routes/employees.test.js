@@ -11,7 +11,8 @@ const {
   commonBeforeEach,
   commonAfterEach,
   commonAfterAll,
-  testEmployeesIds
+  testEmployeesIds,
+  testEmployeesLeviathanIds
 } = require("./_testCommon");
 
 
@@ -93,6 +94,36 @@ describe("GET /employees/:id", () => {
 
 
 
+/************************************** GET /employees/leviathanid/:id */
+describe("GET /employees/leviathanid/:id", () => { 
+
+  test("works", async () => {
+    const resp = await request(app)
+      .get(`/employees/leviathan/${testEmployeesLeviathanIds[0]}`)
+    
+    expect(resp.body).toEqual({
+      employee: {
+        id: testEmployeesIds[0],
+        firstname: 'd1',
+        lastname: 'test1',
+        email: 'newEmployee1@test.com',
+        leviathanid: testEmployeesLeviathanIds[0],
+        telephone: '111-111-1111',
+        role: 'driver1'
+      }
+    });
+  });
+  
+
+  test("not found if employee not found", async () => {
+    const resp = await request(app)
+        .get(`/employee/leviathan/notfound`)
+    expect(resp.statusCode).toEqual(404);
+  });
+});
+
+
+
 
 /************************************** POST / employee */
 describe("POST /employees", () => {
@@ -155,7 +186,23 @@ describe("DELETE /employee/:id", () => {
   });
 });
 
+/************************************** DELETE /employee/leviathan/:id */
 
+describe("DELETE /employee/:id", () => {
+  
+  test("works", async () => {
+    const resp = await request(app)
+      .delete(`/employees/leviathan/${testEmployeesLeviathanIds[0]}`)
+    expect(resp.body).toEqual({  message: "Employee deleted!" });
+  });
+
+
+  test("not found if employee doesn't exist", async () => {
+    const resp = await request(app)
+      .delete(`/employee/leviathan/notfound`)
+    expect(resp.statusCode).toEqual(404);
+  });
+});
 
 /************************************** PATCH /employees/:id */
 
@@ -197,6 +244,55 @@ describe("PATCH /employees/:id", () => {
   test("bad request if invalid data", async () => {
     const resp = await request(app)
       .patch(`/employees/${testEmployeesIds[0]}`)
+      .send({
+        firstName: "updated first Name",
+        lastName: 999,
+      })
+    expect(resp.statusCode).toEqual(400);
+  });
+});
+
+
+/************************************** PATCH /employees/leviathan/:id */
+
+describe("PATCH /employees/leviathan/:id", () => {
+  test("works", async () => {
+    const employee = {
+        id: expect.any(Number),
+        firstname: 'updated first Name',
+        lastname: 'updated last Name',
+        email: null,
+        leviathanid: 'leviId1',
+        telephone: '111-111-1111',
+        role: 'updatedRole'
+      }
+    const resp = await request(app)
+      .patch(`/employees/leviathan/${testEmployeesLeviathanIds[0]}`)
+      .send({
+        firstName: "updated first Name",
+        lastName: "updated last Name",
+        role: 'updatedRole',
+        telephone:"111-111-1111"
+        })
+    expect(resp.body).toEqual({ employee });
+  });
+
+
+
+  test("not found if no such employee", async () => {
+    const resp = await request(app)
+      .patch(`/employees/leviathan/notfound`)
+      .send({
+        firstName: "updated first Name",
+        lastName: "updated last Name",
+        email: "updated@updated.com"
+      })
+    expect(resp.statusCode).toEqual(404);
+  });
+  
+  test("bad request if invalid data", async () => {
+    const resp = await request(app)
+      .patch(`/employees/leviathan/${testEmployeesLeviathanIds[0]}`)
       .send({
         firstName: "updated first Name",
         lastName: 999,

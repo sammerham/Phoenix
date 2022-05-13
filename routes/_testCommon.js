@@ -4,9 +4,10 @@ const db = require("../db");
 const Employee = require("../models/employee");
 
 const testEmployeesIds = [];
+const testEmployeesLeviathanIds = [];
 async function commonBeforeAll() {
-
-  await db.query("DELETE FROM employee");
+// Clear employee table
+await db.query("DELETE FROM employee");
  
 // adding employees
   const emp1 = await Employee.addEmployee(
@@ -37,6 +38,9 @@ async function commonBeforeAll() {
   testEmployeesIds[0] = emp1.id;
   testEmployeesIds[1] = emp2.id;
   testEmployeesIds[2] = emp3.id;
+  testEmployeesLeviathanIds[0] = emp1.leviathanid;
+  testEmployeesLeviathanIds[1] = emp1.leviathanid;
+  testEmployeesLeviathanIds[2] = emp1.leviathanid;
 }
 
 async function commonBeforeEach() {
@@ -57,5 +61,6 @@ module.exports = {
   commonBeforeEach,
   commonAfterEach,
   commonAfterAll,
-  testEmployeesIds
+  testEmployeesIds,
+  testEmployeesLeviathanIds
 };

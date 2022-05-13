@@ -7,14 +7,15 @@ class Employee {
     returns
 {
 "employees": [
-    {
-		"email": "larryd@test.net",
-		"firstName": "Larry",
-		"telephone": "555-555-8090",
-		"role": "consultant",
-		"id": "4cd3586e-1fbe-4a08-946f-0a7df38918a2",
-		"lastName": "David"
-	}, .....]
+		{
+			"id": 1,
+			"firstname": "testFirst",
+			"lastname": "test",
+			"email": "foo@bar.com",
+			"leviathanid": "a72a8054-ce39-4b3b-bee1-aa7e8cc173ac",
+			"telephone": "1112223333",
+			"role": "owner"
+		}, .....]
    */
   static async showAll() {
     const results = await db.query(`
@@ -33,6 +34,41 @@ class Employee {
   };
 
  
+
+
+/** get an employee record from db by ID;
+    returns
+{
+	"employee": {
+		"id": 1,
+		"firstname": "testFirst",
+		"lastname": "test",
+		"email": "foo@bar.com",
+		"leviathanid": "a72a8054-ce39-4b3b-bee1-aa7e8cc173ac",
+		"telephone": "1112223333",
+		"role": "owner"
+	}
+}
+   */
+  
+  static async showEmployeeById(id) {
+    const results = await db.query(
+      `SELECT 
+      id,
+      firstName,
+      lastName,
+      email,
+      leviathanID,
+      telephone,
+      role
+      FROM
+      employee
+      WHERE
+      id = $1`,
+      [id]
+    );
+    return results.rows[0];
+  }
 
 /** get an employee record from db by leviathanID;
     returns
@@ -62,48 +98,26 @@ class Employee {
       FROM
       employee
       WHERE
-      leviathanID = $1`,
+      leviathanid = $1`,
       [leviathanID]
-    );
-    return results.rows;
-  }
-
-
-//   /** get an employee record from db by ID;
-//     returns
-// {
-// "employee": 
-//     {
-// 		"email": "larryd@test.net",
-// 		"firstName": "Larry",
-// 		"telephone": "555-555-8090",
-// 		"role": "consultant",
-// 		"id": "4cd3586e-1fbe-4a08-946f-0a7df38918a2",
-//     "leviathanID" ""4cd3586e-1fbe-4a08-946f-0a7df38918a2"":
-// 		"lastName": "David"
-// 	}
-  
-  static async showEmployeeById(id) {
-    const results = await db.query(
-      `SELECT 
-      id,
-      firstName,
-      lastName,
-      email,
-      leviathanID,
-      telephone,
-      role
-      FROM
-      employee
-      WHERE
-      id = $1`,
-      [id]
     );
     return results.rows[0];
   }
 
-
-  // fn to add a employee record into db;
+  /** Add an employee record into db ;
+    returns
+{
+	"employee": {
+		"id": 1,
+		"firstname": "testFirst",
+		"lastname": "test",
+		"email": "foo@bar.com",
+		"leviathanid": "a72a8054-ce39-4b3b-bee1-aa7e8cc173ac",
+		"telephone": "1112223333",
+		"role": "owner"
+	}
+}
+   */
   static async addEmployee(
     firstName,
     lastName,
@@ -146,9 +160,23 @@ class Employee {
       return results.rows[0];
   };
 
-/** edit employee, return {employee: employee} */
+
+/** Edit an employee record with id;
+    returns
+{
+	"employee": {
+		"id": 1,
+		"firstname": "testFirst",
+		"lastname": "test",
+		"email": "foo@bar.com",
+		"leviathanid": "a72a8054-ce39-4b3b-bee1-aa7e8cc173ac",
+		"telephone": "1112223333",
+		"role": "owner"
+	}
+}
+   */
   
-  static async updateEmployee(data, id) {
+  static async updateEmployeeById(data, id) {
     const {
       firstName,
       lastName,
@@ -186,7 +214,69 @@ class Employee {
     }
     
   };
-/** delete employee, return id */
+
+
+
+  /** Edit an employee record with leviathanid;
+    returns
+{
+	"employee": {
+		"id": 1,
+		"firstname": "testFirst",
+		"lastname": "test",
+		"email": "foo@bar.com",
+		"leviathanid": "a72a8054-ce39-4b3b-bee1-aa7e8cc173ac",
+		"telephone": "1112223333",
+		"role": "owner"
+	}
+}
+   */
+  
+  static async updateEmployeeByLeviathanid(data, leviathanid) {
+    const {
+      firstName,
+      lastName,
+      email,
+      telephone,
+      role } = data;
+    try {
+      const results = await db.query(
+        `UPDATE
+        employee
+        SET
+        firstName = $1,
+        lastName=$2,
+        email = $3,
+        telephone = $4,
+        role=$5
+        WHERE
+        leviathanid = $6
+        RETURNING
+          id,
+          firstName,
+          lastName,
+          email,
+          leviathanID,
+          telephone,
+          role`,
+        [firstName,
+          lastName,
+          email,
+          telephone,
+          role, leviathanid]);
+      return results.rows[0];
+    } catch (e) { 
+      throw new ExpressError(e.message, 400)
+    }
+    
+  };
+
+/** delete employee, return id 
+ returns
+ {
+	"message": "Employee deleted!"
+}
+*/
 
   static async deleteEmployee(id) {
     const results = await db.query(
@@ -209,7 +299,7 @@ class Employee {
        FROM
        employee
        WHERE
-       id = $1
+       leviathanid = $1
        RETURNING id`,
       [LeviathanID]);
     return results.rows[0];
