@@ -29,11 +29,20 @@ jest file name
 ## Getting Started
 1- Install PostgreSQL on your machine. 
 ###
+2- Create two data bases one for app and the other one for testing
+A-  
+```bash
+createdb phoenixdb
+```
+B- 
+```bash
+createdb phoenixdb_test
+```
 2 - Run data.sql file to create database, from your project directory run below command.
 ```bash
 psql < data.sql 
 ```
-3- change name of .envSample file to .env and add your APIUser and APIKey.
+<!-- 3- change name of .envSample file to .env and add your APIUser and APIKey. -->
 ###
 4- 
 Starting Server 3001
