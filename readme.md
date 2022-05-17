@@ -30,7 +30,18 @@ Tests are written using Jest and SuperTest, to run tests:
 jest file name
 ```
 ## Getting Started
-1- Install PostgreSQL on your machine. 
+1- Install PostgreSQL on your machine.
+
+# Download and install PostgreSQL
+
+```bash
+brew install postgres
+```
+# Start the PostgreSQL server automatically in the background
+
+```bash
+brew services start postgresql
+```
 ###
 2- Create two data bases one for app and the other one for testing
 A-  
