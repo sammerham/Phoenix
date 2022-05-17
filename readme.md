@@ -32,12 +32,12 @@ jest file name
 ## Getting Started
 1- Install PostgreSQL on your machine.
 
-# Download and install PostgreSQL
+## Download and install PostgreSQL
 
 ```bash
 brew install postgres
 ```
-# Start the PostgreSQL server automatically in the background
+## Start the PostgreSQL server automatically in the background
 
 ```bash
 brew services start postgresql
