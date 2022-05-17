@@ -5,6 +5,9 @@ Phoenix is an API that support CRUD-style operations on a number of entities and
 - Customers (TBD)
 - Orders (TBD)
 
+## Deployed Version
+https://phoenixsam.herokuapp.com/
+
 ## Installation
 
 Use the node package manager to install install all the dependencies.
