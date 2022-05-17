@@ -2,9 +2,18 @@
 const express = require("express");
 const axios = require("axios");
 const router = express.Router();
-const URL = process.env.URL;
-const API_USER = process.env.APIUser
-const API_Key = process.env.APIKey
+// const URL = process.env.URL;
+// const API_USER = process.env.APIUser
+// const API_Key = process.env.APIKey
+const URL = 'https://leviathan.challenge.growflow.com/'
+const API_USER = CHALLENGEUSER
+const API_Key = CHALLENGEKEY
+
+
+
+
+
+
 
 const { NotFoundError, ExpressError } = require("../expressError");
 const Employee = require('../models/employee');
