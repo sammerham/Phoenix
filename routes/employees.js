@@ -6,8 +6,8 @@ const router = express.Router();
 // const API_USER = process.env.APIUser
 // const API_Key = process.env.APIKey
 const URL = 'https://leviathan.challenge.growflow.com/'
-const API_USER = CHALLENGEUSER
-const API_Key = CHALLENGEKEY
+const API_USER = 'CHALLENGEUSER'
+const API_Key = 'CHALLENGEKEY'
 
 
 
